@@ -1,7 +1,7 @@
+from django.contrib.auth.models import AbstractBaseUser, PersmissionsMixin, BaseUserManager
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import AbstractBaseUser, PersmissionsMixin
 
 
 class User(AbstractBaseUser, PersmissionsMixin):
@@ -27,11 +27,18 @@ class User(AbstractBaseUser, PersmissionsMixin):
     )
     is_active = models.BooleanField(
         _('active'),
-        default=True
+        default=True,
+        help_text=_(
+            'Designates whether this user should be treated as active. '
+            'Unselect this instead of deleting accounts.'
+        )
     )
     is_staff = models.BooleanField(
         _('staff status'),
-        default=False
+        default=False,
+        help_text=_(
+            'Designates whether the user can log into this admin site.'
+        )
     )
 
     def get_full_name(self):
@@ -43,4 +50,32 @@ class User(AbstractBaseUser, PersmissionsMixin):
     def __unicode__(self):
         return self.email
 
+    objects = CustomUserManager()
+
     USERNAME_FIELD = 'email'
+
+
+class CustomUserManager(BaseUserManager):
+    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
+        if not email:
+            raise ValueError('Users must have an email address.')
+
+        user = self.model(
+            email=self.normalize_email(email),
+            date_joined=timezone.now(),
+            is_active=True,
+            is_staff=is_staff
+            is_superuser=is_superuser,
+            **extra_fields
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+
+        return user
+
+    def create_user(self, email, password, **extra_fields):
+        return _create_user(email, password, False, False, **extra_fields)
+
+    def create_superuser(self, email, password, **extra_fields):
+        return _create_user(email, password, True, True, **extra_fields)
