@@ -49,7 +49,7 @@ class UserCreationForm(forms.ModelForm):
         Save provided password in hashed format.
         """
         user = super(UserCreationForm, self).save(commit=False)
-        user.set_password(self.cleaned_data['password'])
+        user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()
         return user
@@ -88,22 +88,6 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference the removed 'username' field
-
-    '''
-    fieldsets = (
-        (None, {'fields': ('email', 'password')}),
-        ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('date_joined',)})
-    )
-
-    add_fieldsets = (
-        ('Enter user information', {
-            'classes': ('wide'),
-            'fields': ('email', 'password1', 'password2')
-        }),
-    )
-    '''
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
@@ -121,6 +105,9 @@ class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserCreationForm
     add_form = UserChangeForm
+
+    form = UserChangeForm
+    add_form = UserCreationForm
 
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
