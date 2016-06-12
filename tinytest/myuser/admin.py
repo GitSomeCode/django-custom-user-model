@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.contrib.auth.models import Group
 from django.utils.translation import ugettext_lazy as _
 
 from .models import User
@@ -28,7 +28,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('email')
+        fields = ('email',)
 
     def clean_password2(self):
         """
@@ -58,14 +58,21 @@ class UserCreationForm(forms.ModelForm):
 class UserChangeForm(forms.ModelForm):
     """
     A form for updating users. Includes the fields on the user
-    but replaces the password field with admin's password hash 
+    but replaces the password field with admin's password hash
     display field.
     """
     password = ReadOnlyPasswordHashField()
 
     class Meta:
         model = User
-        fields = ('email', 'password', 'first_name', 'last_name', 'is_active', 'is_staff')
+        fields = (
+            'email',
+            'password',
+            'first_name',
+            'last_name',
+            'is_active',
+            'is_staff'
+        )
 
     def clean_password(self):
         """
@@ -81,6 +88,8 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference the removed 'username' field
+
+    '''
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
@@ -89,10 +98,24 @@ class UserAdmin(BaseUserAdmin):
     )
 
     add_fieldsets = (
-        (None, {
+        ('Enter user information', {
             'classes': ('wide'),
             'fields': ('email', 'password1', 'password2')
         }),
+    )
+    '''
+    fieldsets = (
+        (None, {'fields': ('email', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
+                                       'groups', 'user_permissions')}),
+        (_('Important dates'), {'fields': ('date_joined',)}),
+    )
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'password1', 'password2')}
+        ),
     )
 
     # The forms to add and change user instances
@@ -105,7 +128,6 @@ class UserAdmin(BaseUserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
 
-    admin.site.register(User, UserAdmin)
-    admin.site.unregister(Group)
 
-
+admin.site.register(User, UserAdmin)
+admin.site.unregister(Group)

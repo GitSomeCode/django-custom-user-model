@@ -1,15 +1,16 @@
-from django.contrib.auth.models import AbstractBaseUser, PersmissionsMixin, BaseUserManager
+from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from .managers import CustomUserManager
 
-class User(AbstractBaseUser, PersmissionsMixin):
+
+class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(
         _('email address'),
         unique=True,
-        max_length=200,
-        verbose_name='email'
+        max_length=200
     )
     first_name = models.CharField(
         _('first name'),
@@ -53,29 +54,3 @@ class User(AbstractBaseUser, PersmissionsMixin):
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
-
-
-class CustomUserManager(BaseUserManager):
-    def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
-        if not email:
-            raise ValueError('Users must have an email address.')
-
-        user = self.model(
-            email=self.normalize_email(email),
-            date_joined=timezone.now(),
-            is_active=True,
-            is_staff=is_staff
-            is_superuser=is_superuser,
-            **extra_fields
-        )
-
-        user.set_password(password)
-        user.save(using=self._db)
-
-        return user
-
-    def create_user(self, email, password, **extra_fields):
-        return _create_user(email, password, False, False, **extra_fields)
-
-    def create_superuser(self, email, password, **extra_fields):
-        return _create_user(email, password, True, True, **extra_fields)
