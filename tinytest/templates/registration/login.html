@@ -1,0 +1,32 @@
+{%  extends 'myuser/base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+{% endblock %}
+
+{% block style %}
+{% endblock %}
+
+{% block content %}
+    <form method="post" action="{% url 'custom_login' %}">
+        {% csrf_token %}
+            <table>
+            <tr>
+                <td>{{ form.email.label_tag }}</td>
+                <td>{{ form.email }}</td>
+            </tr>
+            <tr>
+                <td>{{ form.password.label_tag }}</td>
+                <td>{{ form.password }}</td>
+            </tr>
+            </table>
+
+            <input type="submit" value="login" />
+            
+            <input type="hidden" name="next" value="{{ next }}" />
+
+    </form>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
