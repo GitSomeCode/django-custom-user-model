@@ -37,13 +37,15 @@ class RegistrationForm(forms.ModelForm):
         return user
 
 
-class LoginForm(forms.ModelForm):
+class LoginForm(forms.Form):
     '''
     Login and authenticate user.
     '''
     email = forms.EmailField(widget=forms.widgets.TextInput)
     password = forms.CharField(widget=forms.widgets.PasswordInput)
 
+    '''
     class Meta:
         model = User
         fields = ('email', 'password')
+    '''

@@ -41,11 +41,12 @@ INSTALLED_APPS = [
     'myuser',
 ]
 
-LOGIN_URL = 'custom_login'
-LOGIN_REDIRECT_URL = 'myuser/success.html'
+#LOGIN_URL = 'custom_login'
+#LOGIN_REDIRECT_URL = 'myuser/success.html'
 
 # Our custom user model
 AUTH_USER_MODEL = 'myuser.User'
+AUTHENTICATION_BACKENDS = ['myuser.backends.EmailAuthBackend', ]
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
