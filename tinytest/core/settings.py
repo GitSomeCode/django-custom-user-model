@@ -41,11 +41,10 @@ INSTALLED_APPS = [
     'myuser',
 ]
 
-#LOGIN_URL = 'custom_login'
-#LOGIN_REDIRECT_URL = 'myuser/success.html'
-
 # Our custom user model
 AUTH_USER_MODEL = 'myuser.User'
+
+# Email user backend (not working with admin)
 AUTHENTICATION_BACKENDS = ['myuser.backends.EmailAuthBackend', ]
 
 MIDDLEWARE_CLASSES = [
