@@ -13,6 +13,7 @@ class UserCreationForm(forms.ModelForm):
     A form for creating new users, with no privileges,
     from the given email and password.
     """
+
     error_messages = {
         'password_mismatch': _("The two password fields didn't match."),
     }
@@ -48,6 +49,7 @@ class UserCreationForm(forms.ModelForm):
         """
         Save provided password in hashed format.
         """
+
         user = super(UserCreationForm, self).save(commit=False)
         user.set_password(self.cleaned_data['password1'])
         if commit:
@@ -61,6 +63,7 @@ class UserChangeForm(forms.ModelForm):
     but replaces the password field with admin's password hash
     display field.
     """
+    
     password = ReadOnlyPasswordHashField()
 
     class Meta:
@@ -103,9 +106,6 @@ class UserAdmin(BaseUserAdmin):
     )
 
     # The forms to add and change user instances
-    form = UserCreationForm
-    add_form = UserChangeForm
-
     form = UserChangeForm
     add_form = UserCreationForm
 
