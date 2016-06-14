@@ -88,5 +88,8 @@ ENV/
 # Rope project settings
 .ropeproject
 
+# Apple/misc
+.DS_Store
+
 # Database
 *.sqlite3
