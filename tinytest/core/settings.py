@@ -44,9 +44,6 @@ INSTALLED_APPS = [
 # Our custom user model
 AUTH_USER_MODEL = 'myuser.User'
 
-# Email user backend (not working with admin)
-AUTHENTICATION_BACKENDS = ['myuser.backends.EmailAuthBackend', ]
-
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
