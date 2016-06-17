@@ -18,7 +18,7 @@ def register(request):
     if request.method == 'POST':
         if form.is_valid():
             # Creates the new user
-            new_user = form.save()
+            form.save()
 
             # Authenticate and log in user
             email = form.cleaned_data['email']
@@ -35,21 +35,22 @@ def register(request):
 
 
 def login(request):
-    form = LoginForm(request.POST or None)
+    if request.user.is_authenticated():
+        return redirect('success_login')
+    else:
+        form = LoginForm(request.POST or None)
 
-    if request.method == 'POST':
-        if form.is_valid():
-            data = form.cleaned_data
-            print("login FORM VALID!")
-            user = authenticate(email=data['email'], password=data['password'])
-
-            if user and user.is_active:
+        if request.method == 'POST':
+            if form.is_valid():
+                # Get user, log in user, redirect
+                data = form.cleaned_data
+                user = authenticate(email=data['email'], password=data['password'])
                 django_login(request, user)
                 return redirect('success_login')
             else:
                 print(form.errors)
 
-    return render(request, 'registration/login.html', {'form': form})
+        return render(request, 'registration/login.html', {'form': form})
 
 
 def logout(request):
