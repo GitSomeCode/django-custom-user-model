@@ -13,25 +13,28 @@ def success_login(request):
 
 
 def register(request):
-    form = RegistrationForm(request.POST or None)
+    if request.user.is_authenticated():
+        return redirect('success_login')
+    else:
+        form = RegistrationForm(request.POST or None)
 
-    if request.method == 'POST':
-        if form.is_valid():
-            # Creates the new user
-            form.save()
+        if request.method == 'POST':
+            if form.is_valid():
+                # Creates the new user
+                form.save()
 
-            # Authenticate and log in user
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password1']
-            user = authenticate(email=email, password=password)
+                # Authenticate and log in user
+                email = form.cleaned_data['email']
+                password = form.cleaned_data['password1']
+                user = authenticate(email=email, password=password)
 
-            if user and user.is_active:
-                django_login(request, user)
-                return redirect('success_register')
-        else:
-            print(form.errors)
+                if user and user.is_active:
+                    django_login(request, user)
+                    return redirect('success_register')
+            else:
+                print(form.errors)
 
-    return render(request, 'registration/register.html', {'form': form})
+        return render(request, 'registration/register.html', {'form': form})
 
 
 def login(request):
